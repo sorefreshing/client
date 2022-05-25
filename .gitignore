@@ -1,0 +1,15 @@
+cdk.out
+codegen
+coverage*
+dist
+node_modules
+vscode*
+.vscode*
+.cleanmodules
+.DS_Store
+.eslintcache
+.nyc_output
+crons/**/pnpm-lock.yaml
+services/**/pnpm-lock.yaml
+.pnpm-debug.log
+.env
