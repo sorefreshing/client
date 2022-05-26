@@ -14,13 +14,12 @@ import { error, refresh, warn } from './log';
 // ignore 1008 (HTTP 400 equivalent) and 1011 (HTTP 500 equivalent)
 const ignoreCodes = [1008, 1011];
 const maxAttempts = 10;
+const uri = '';
 
 export class Socket {
-  constructor(options, ...args) {
-    this.args = args;
+  constructor() {
     this.attempts = 0;
     this.eventHandlers = [];
-    this.options = options;
     this.retrying = false;
 
     this.connect();
@@ -42,23 +41,19 @@ export class Socket {
 
     this.connecting = true;
 
-    this.socket = new WebSocket(...this.args);
+    this.socket = new WebSocket(uri);
 
-    if (this.options.retry) {
-      this.socket.addEventListener('close', (event) => {
-        if (ignoreCodes.includes(event.code)) {
-          return;
-        }
+    this.socket.addEventListener('close', (event) => {
+      if (ignoreCodes.includes(event.code)) {
+        return;
+      }
 
-        if (!this.retrying) {
-          warn(`The WebSocket was closed and will attempt to reconnect`);
-        }
+      if (!this.retrying) {
+        warn(`The WebSocket was closed and will attempt to reconnect`);
+      }
 
-        this.reconnect();
-      });
-    } else {
-      this.socket.onclose = () => warn(`The client WebSocket was closed. ${refresh}`);
-    }
+      this.reconnect();
+    });
 
     this.socket.addEventListener('open', () => {
       this.attempts = 0;
@@ -84,7 +79,7 @@ export class Socket {
 
     const timeout = 1000 * this.attempts ** 2;
 
-    setTimeout(() => this.connect(this.args), timeout);
+    setTimeout(() => this.connect(), timeout);
   }
 
   removeEventListener(...args) {

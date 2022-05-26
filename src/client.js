@@ -14,24 +14,40 @@
 import { info, warn } from './log';
 import { Socket } from './socket';
 
-const run = (buildHash, options) => {
-  const { address, client = {} } = options;
+// TODO: assert a single socket
+// TODO: single socket handles all messages
+// When calling the main function in a snippet, we should "register" a refresher so the "refresh"
+// message just bounces it off of all registered tags
 
-  const protocol = 'wss';
-  const socket = new Socket(
-    client,
-    `${client.protocol || protocol}://${client.address || address}/wps`
-  );
+const tags = {};
+const refreshingId = 'ƃuᴉɥsǝɹɟǝɹ';
+window[refreshingId] = window[refreshingId] || {};
 
-  const { compilerName } = options;
+const once = (fn) => {
+  let result;
+  let ran = false;
+  return (...args) => {
+    if (ran) return result;
+    ran = true;
+    result = fn(...args);
+    return result;
+  };
+};
 
-  window.webpackPluginServe.compilers[compilerName] = {};
+const init = ({ accountId, appId }) => {
+  let { socket } = window[refreshingId];
+
+  if (socket) return;
 
   // prevents ECONNRESET errors on the server
   window.addEventListener('beforeunload', () => socket.close());
 
+  window[refreshingId].socket = new Socket();
+  ({ socket } = window[refreshingId]);
+
   socket.addEventListener('message', (message) => {
     const { action, data = {} } = JSON.parse(message.data);
+    const refreshFn = tags[data.tagId];
 
     switch (action) {
       case 'connected':
@@ -41,12 +57,31 @@ const run = (buildHash, options) => {
         socket.send('pong', {});
         break;
       case 'refresh':
-        window.location.reload();
+        if (refreshFn) refreshFn();
         break;
       default:
         warn(`Unknown message: ${action}`);
+        break;
     }
+  });
+
+  socket.addEventListener('open', () => {
+    const message = {
+      action: 'init',
+      data: { accountId, appId }
+    };
+    socket.send(JSON.stringify(message));
   });
 };
 
-module.exports = { run };
+window[refreshingId].init = once((...args) => {
+  init(...args);
+});
+
+window[refreshingId].component = ({ fn, tagId }) => {
+  tags[tagId] = fn;
+};
+
+window[refreshingId].page = ({ tagId }) => {
+  tags[tagId] = () => window.location.reload();
+};
