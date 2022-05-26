@@ -65,11 +65,7 @@
       this.socket.removeEventListener(...args);
     }
     send(action, data) {
-      const ourData = JSON.stringify({ action, data });
-      this.socket.send(JSON.stringify({
-        data: ourData,
-        message: "sendmessage"
-      }));
+      this.socket.send(JSON.stringify({ action, data }));
     }
   };
 
@@ -103,6 +99,7 @@
           info("WebSocket connected");
           break;
         case "ping":
+          info("sending pong");
           socket.send("pong", {});
           break;
         case "refresh":
@@ -116,11 +113,8 @@
     });
     socket.addEventListener("open", () => {
       info("WebSocket open");
-      const message = {
-        action: "init",
-        data: { accountId, appId }
-      };
-      socket.send(JSON.stringify(message));
+      socket.send("init", { accountId, appId });
+      info("init message sent");
     });
   };
   window[refreshingId].init = once((...args) => {

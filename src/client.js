@@ -54,6 +54,7 @@ const init = ({ accountId, appId }) => {
         info('WebSocket connected');
         break;
       case 'ping':
+        info('sending pong');
         socket.send('pong', {});
         break;
       case 'refresh':
@@ -67,11 +68,8 @@ const init = ({ accountId, appId }) => {
 
   socket.addEventListener('open', () => {
     info('WebSocket open');
-    const message = {
-      action: 'init',
-      data: { accountId, appId }
-    };
-    socket.send(JSON.stringify(message));
+    socket.send('init', { accountId, appId });
+    info('init message sent');
   });
 };
 
