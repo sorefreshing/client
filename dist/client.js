@@ -106,11 +106,12 @@
             refreshFn();
           break;
         default:
-          warn(`Unknown message: ${action}`);
+          warn(`Unknown message:`, message);
           break;
       }
     });
     socket.addEventListener("open", () => {
+      info("WebSocket open");
       const message = {
         action: "init",
         data: { accountId, appId }
