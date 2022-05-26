@@ -89,6 +89,12 @@ export class Socket {
   }
 
   send(action, data) {
-    this.socket.send(JSON.stringify({ action, data }));
+    const ourData = JSON.stringify({ action, data });
+    this.socket.send(
+      JSON.stringify({
+        data: ourData,
+        message: 'sendmessage'
+      })
+    );
   }
 }
