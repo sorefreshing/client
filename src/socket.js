@@ -14,7 +14,7 @@ import { error, refresh, warn } from './log';
 // ignore 1008 (HTTP 400 equivalent) and 1011 (HTTP 500 equivalent)
 const ignoreCodes = [1008, 1011];
 const maxAttempts = 10;
-const uri = '';
+const uri = 'wss://refreshing.to';
 
 export class Socket {
   constructor() {

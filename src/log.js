@@ -8,16 +8,10 @@
   The above copyright notice and this permission notice shall be
   included in all copies or substantial portions of this Source Code Form.
 */
-const { error, info, warn } = console;
-export const log = {
-  error: error.bind(console, '↻ refreshing:'),
-  info: info.bind(console, '↻ refreshing:'),
-  refresh: 'Please refresh the page',
-  warn: warn.bind(console, '↻ refreshing:')
-};
-export const noop = () => {};
-export const silent = {
-  error: noop,
-  info: noop,
-  warn: noop
-};
+/* eslint-disable no-console */
+const error = console.error.bind(console, '↻ refreshing:');
+const info = console.info.bind(console, '↻ refreshing:');
+const refresh = 'Please refresh the page';
+const warn = console.warn.bind(console, '↻ refreshing:');
+
+export { error, info, refresh, warn };

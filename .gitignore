@@ -1,7 +1,6 @@
 cdk.out
 codegen
 coverage*
-dist
 node_modules
 vscode*
 .vscode*
