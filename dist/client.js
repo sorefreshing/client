@@ -8,7 +8,7 @@
   // src/socket.js
   var ignoreCodes = [1008, 1011];
   var maxAttempts = 10;
-  var uri = "wss://ws.refreshing.to";
+  var uri = "wss://2qcdgvpfua.execute-api.us-east-1.amazonaws.com/stage";
   var Socket = class {
     constructor() {
       this.attempts = 0;
