@@ -8,7 +8,7 @@
   // src/socket.js
   var ignoreCodes = [1008, 1011];
   var maxAttempts = 10;
-  var uri = "wss://refreshing.to";
+  var uri = "wss://ws.refreshing.to";
   var Socket = class {
     constructor() {
       this.attempts = 0;
